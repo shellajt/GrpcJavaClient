@@ -29,7 +29,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package io.grpc.examples.experimental;
+package io.grpc.examples.addition;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -43,25 +43,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * A simple client that requests a greeting from the
- *      {@link io.grpc.examples.helloworld.HelloWorldServer}.
- *
- * <p>This class should act a a drop in replacement for
- *      {@link io.grpc.examples.helloworld.HelloWorldClient}.
+ * Created by Jesse Shellabarger 2/17/2017
  */
-public class CompressingHelloWorldClient {
-  private static final Logger logger =
-      Logger.getLogger(CompressingHelloWorldClient.class.getName());
+public class AdderClient {
+  private static final Logger logger = Logger.getLogger(AdderClient.class.getName());
 
   private final ManagedChannel channel;
-  private final GreeterGrpc.GreeterBlockingStub blockingStub;
+  private final AdderGrpc.AdderBlockingStub blockingStub;
 
-  /** Construct client connecting to HelloWorld server at {@code host:port}. */
-  public CompressingHelloWorldClient(String host, int port) {
+  /** Construct client connecting to Adder server at {@code host:port}. */
+  public AdderClient(String host, int port) {
     channel = ManagedChannelBuilder.forAddress(host, port)
+        // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
+        // needing certificates.
         .usePlaintext(true)
         .build();
-    blockingStub = GreeterGrpc.newBlockingStub(channel);
+    blockingStub = AdderGrpc.newBlockingStub(channel);
   }
 
   public void shutdown() throws InterruptedException {
@@ -69,19 +66,17 @@ public class CompressingHelloWorldClient {
   }
 
   /** Say hello to server. */
-  public void greet(String name) {
-    logger.info("Will try to greet " + name + " ...");
-    HelloRequest request = HelloRequest.newBuilder().setName(name).build();
-    HelloReply response;
+  public void greet(int num1, int num2) {
+    logger.info("Will try to request addition of " + num1 + " and " + num2 + " ...");
+    AddRequest request = AddRequest.newBuilder().setNum1(num1+"").setNum2(num2+"").build();
+    AddReply response;
     try {
-      // This enables compression for requests. Independent of this setting, servers choose whether
-      // to compress responses.
-      response = blockingStub.withCompression("gzip").sayHello(request);
+      response = blockingStub.addNumbers(request);
     } catch (StatusRuntimeException e) {
       logger.log(Level.WARNING, "RPC failed: {0}", e.getStatus());
       return;
     }
-    logger.info("Greeting: " + response.getMessage());
+    logger.info("Sum: " + response.getSum());
   }
 
   /**
@@ -89,14 +84,12 @@ public class CompressingHelloWorldClient {
    * greeting.
    */
   public static void main(String[] args) throws Exception {
-    CompressingHelloWorldClient client = new CompressingHelloWorldClient("localhost", 50051);
+    AdderClient client = new AdderClient("localhost", 50051);
     try {
       /* Access a service running on the local machine on port 50051 */
-      String user = "world";
-      if (args.length > 0) {
-        user = args[0]; /* Use the arg as the name to greet if provided */
-      }
-      client.greet(user);
+      int num1 = 5;
+      int num2 = 4;
+      client.greet(num1, num2);
     } finally {
       client.shutdown();
     }

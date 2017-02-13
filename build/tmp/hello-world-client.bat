@@ -49,6 +49,7 @@ goto fail
 @rem Get command-line arguments, handling Windows variants
 
 if not "%OS%" == "Windows_NT" goto win9xME_args
+if "%@eval[2+2]" == "4" goto 4NT_args
 
 :win9xME_args
 @rem Slurp the command line arguments.
@@ -59,11 +60,16 @@ set _SKIP=2
 if "x%~1" == "x" goto execute
 
 set CMD_LINE_ARGS=%*
+goto execute
+
+:4NT_args
+@rem Get arguments from the 4NT Shell from JP Software
+set CMD_LINE_ARGS=%$
 
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\examples.jar;%APP_HOME%\lib\grpc-netty-1.1.2.jar;%APP_HOME%\lib\grpc-protobuf-1.1.2.jar;%APP_HOME%\lib\grpc-stub-1.1.2.jar;%APP_HOME%\lib\grpc-core-1.1.2.jar;%APP_HOME%\lib\netty-codec-http2-4.1.8.Final.jar;%APP_HOME%\lib\netty-handler-proxy-4.1.8.Final.jar;%APP_HOME%\lib\protobuf-java-3.1.0.jar;%APP_HOME%\lib\guava-20.0.jar;%APP_HOME%\lib\protobuf-java-util-3.1.0.jar;%APP_HOME%\lib\grpc-protobuf-lite-1.1.2.jar;%APP_HOME%\lib\error_prone_annotations-2.0.11.jar;%APP_HOME%\lib\jsr305-3.0.0.jar;%APP_HOME%\lib\grpc-context-1.1.2.jar;%APP_HOME%\lib\instrumentation-api-0.3.0.jar;%APP_HOME%\lib\netty-codec-http-4.1.8.Final.jar;%APP_HOME%\lib\netty-handler-4.1.8.Final.jar;%APP_HOME%\lib\netty-transport-4.1.8.Final.jar;%APP_HOME%\lib\netty-codec-socks-4.1.8.Final.jar;%APP_HOME%\lib\gson-2.7.jar;%APP_HOME%\lib\netty-codec-4.1.8.Final.jar;%APP_HOME%\lib\netty-buffer-4.1.8.Final.jar;%APP_HOME%\lib\netty-resolver-4.1.8.Final.jar;%APP_HOME%\lib\netty-common-4.1.8.Final.jar
+set CLASSPATH=%APP_HOME%\lib\examples.jar;%APP_HOME%\lib\grpc-netty-1.0.3.jar;%APP_HOME%\lib\grpc-protobuf-1.0.3.jar;%APP_HOME%\lib\grpc-stub-1.0.3.jar;%APP_HOME%\lib\grpc-core-1.0.3.jar;%APP_HOME%\lib\netty-handler-proxy-4.1.6.Final.jar;%APP_HOME%\lib\netty-codec-http2-4.1.6.Final.jar;%APP_HOME%\lib\guava-19.0.jar;%APP_HOME%\lib\protobuf-java-util-3.0.2.jar;%APP_HOME%\lib\protobuf-java-3.0.2.jar;%APP_HOME%\lib\grpc-protobuf-lite-1.0.3.jar;%APP_HOME%\lib\grpc-context-1.0.3.jar;%APP_HOME%\lib\jsr305-3.0.0.jar;%APP_HOME%\lib\netty-transport-4.1.6.Final.jar;%APP_HOME%\lib\netty-codec-socks-4.1.6.Final.jar;%APP_HOME%\lib\netty-codec-http-4.1.6.Final.jar;%APP_HOME%\lib\netty-handler-4.1.6.Final.jar;%APP_HOME%\lib\gson-2.3.jar;%APP_HOME%\lib\netty-buffer-4.1.6.Final.jar;%APP_HOME%\lib\netty-resolver-4.1.6.Final.jar;%APP_HOME%\lib\netty-codec-4.1.6.Final.jar;%APP_HOME%\lib\netty-common-4.1.6.Final.jar
 
 @rem Execute hello-world-client
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %HELLO_WORLD_CLIENT_OPTS%  -classpath "%CLASSPATH%" io.grpc.examples.helloworld.HelloWorldClient %CMD_LINE_ARGS%
